@@ -7,12 +7,38 @@
 //
 
 #include <iostream>
+#include "card.h"
+#include "crazy8s.h"
+#include "echikson.h"
+using namespace std;
 
 int main(int argc, const char * argv[])
 {
+    cout << "start" << endl;
 
-    // insert code here...
-    std::cout << "Hello, World!\n";
+//    //card class tests.
+//    Card crazy(Card::ace, Card::spades);
+//    Card crazy2(Card::ace, Card::diamonds);
+//    Card eight(Card::eight, Card::diamonds);
+//    Card queenSpades(Card::queen, Card::spades);
+//    Card fourhearts(Card::four, Card::hearts);
+//    
+////    cout << "card: " << crazy << endl;
+////    cout << "card2: " << crazy2 << endl;
+////    cout << (crazy == crazy2) << endl;
+//
+//    
+//    Crazy8s game("game1");
+//    
+//    cout << game.handSize() << endl;
+//    cout << game.isWild(eight) << endl;
+//    cout << game.isDrawFive(queenSpades) << endl;
+//    cout << game.isBurner(fourhearts) << endl;
+    
+    
+    Crazy8s game("game2");
+    
+    
     return 0;
 }
 

@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		DED298A8182EA314004077C9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298A7182EA314004077C9 /* main.cpp */; };
 		DED298AA182EA314004077C9 /* P3.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = DED298A9182EA314004077C9 /* P3.1 */; };
+		DED298B8182EA352004077C9 /* card.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298B0182EA352004077C9 /* card.cpp */; };
+		DED298B9182EA352004077C9 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = DED298B2182EA352004077C9 /* Makefile */; };
+		DED298BA182EA352004077C9 /* play.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298B3182EA352004077C9 /* play.cpp */; };
+		DED298BB182EA352004077C9 /* player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298B4182EA352004077C9 /* player.cpp */; };
+		DED298BC182EA352004077C9 /* shedgame_post.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298B6182EA352004077C9 /* shedgame_post.cpp */; };
+		DED298C2182ECD36004077C9 /* echikson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED298C0182ECD36004077C9 /* echikson.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,9 +31,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DEADCC741830B30100BCC18F /* irishSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = irishSwitch.h; sourceTree = "<group>"; };
+		DEADCC771830B4A100BCC18F /* blackjack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blackjack.h; sourceTree = "<group>"; };
 		DED298A4182EA313004077C9 /* P3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = P3; sourceTree = BUILT_PRODUCTS_DIR; };
 		DED298A7182EA314004077C9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DED298A9182EA314004077C9 /* P3.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = P3.1; sourceTree = "<group>"; };
+		DED298B0182EA352004077C9 /* card.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = card.cpp; sourceTree = "<group>"; };
+		DED298B1182EA352004077C9 /* card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = card.h; sourceTree = "<group>"; };
+		DED298B2182EA352004077C9 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		DED298B3182EA352004077C9 /* play.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = play.cpp; sourceTree = "<group>"; };
+		DED298B4182EA352004077C9 /* player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = player.cpp; sourceTree = "<group>"; };
+		DED298B5182EA352004077C9 /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
+		DED298B6182EA352004077C9 /* shedgame_post.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shedgame_post.cpp; sourceTree = "<group>"; };
+		DED298B7182EA352004077C9 /* shedgame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shedgame.h; sourceTree = "<group>"; };
+		DED298BE182EA67C004077C9 /* crazy8s.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crazy8s.h; sourceTree = "<group>"; };
+		DED298C0182ECD36004077C9 /* echikson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = echikson.cpp; sourceTree = "<group>"; };
+		DED298C1182ECD36004077C9 /* echikson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = echikson.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,8 +79,21 @@
 		DED298A6182EA313004077C9 /* P3 */ = {
 			isa = PBXGroup;
 			children = (
+				DED298B0182EA352004077C9 /* card.cpp */,
+				DED298B1182EA352004077C9 /* card.h */,
+				DED298B2182EA352004077C9 /* Makefile */,
+				DED298B3182EA352004077C9 /* play.cpp */,
+				DED298B4182EA352004077C9 /* player.cpp */,
+				DED298B5182EA352004077C9 /* player.h */,
+				DED298B6182EA352004077C9 /* shedgame_post.cpp */,
+				DED298B7182EA352004077C9 /* shedgame.h */,
 				DED298A7182EA314004077C9 /* main.cpp */,
 				DED298A9182EA314004077C9 /* P3.1 */,
+				DED298BE182EA67C004077C9 /* crazy8s.h */,
+				DEADCC741830B30100BCC18F /* irishSwitch.h */,
+				DEADCC771830B4A100BCC18F /* blackjack.h */,
+				DED298C0182ECD36004077C9 /* echikson.cpp */,
+				DED298C1182ECD36004077C9 /* echikson.h */,
 			);
 			path = P3;
 			sourceTree = "<group>";
@@ -117,7 +149,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DED298B9182EA352004077C9 /* Makefile in Sources */,
+				DED298C2182ECD36004077C9 /* echikson.cpp in Sources */,
+				DED298BB182EA352004077C9 /* player.cpp in Sources */,
 				DED298A8182EA314004077C9 /* main.cpp in Sources */,
+				DED298BC182EA352004077C9 /* shedgame_post.cpp in Sources */,
+				DED298B8182EA352004077C9 /* card.cpp in Sources */,
+				DED298BA182EA352004077C9 /* play.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +263,7 @@
 				DED298AF182EA314004077C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
