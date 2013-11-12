@@ -85,8 +85,16 @@ Card::Suit Echikson::setSuit(){
 }
 
 Card Echikson::playCard(){
+    for (int i=0; i<hand.size(); i++){
+        if (hand[i].getRank() == game.getCurRank()) {
+            return hand[i];
+        }
+        else if (hand[i].getSuit() == game.getCurSuit()) {
+            return hand[i];
+        }
+    }
     
-    return Card();
+    return hand.back();
 }
 
 void Echikson::inform(int p, int s, int t){
