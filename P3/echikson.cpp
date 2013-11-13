@@ -85,6 +85,8 @@ Card::Suit Echikson::setSuit(){
 }
 
 Card Echikson::playCard(){
+    
+    //go through hand, and see if one fits the current suit or rank.
     for (int i=0; i<hand.size(); i++){
         if (hand[i].getRank() == game.getCurRank()) {
             return hand[i];
