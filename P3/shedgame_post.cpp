@@ -305,7 +305,7 @@ void ShedGame::nextPlayer() {
     cur += incr;
     
     //loop around for both sides. 
-    if (cur > player.size()) cur = 0;
+    if (cur > player.size()-1) cur = 0;
     else if (cur < 0) cur = (int)player.size() - 1;
     
     curId = player[cur]->getId();

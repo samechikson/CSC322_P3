@@ -55,23 +55,6 @@ public:
 protected:
     const string name;
     
-private:
-    Card::Suit curSuit;
-    //vector<Player*> player;
-    vector<int> net;     // Current hand size of each player.
-    vector<int> played;  // Total number of cards played by each player.
-    vector<int> stage;   // Size of last hand drawn by each player.
-    vector<Card> stock;
-    stack<Card> discard;
-    
-    // Variables and state flags for running the game.
-    int cur;
-    int curId;
-    int incr;
-    int contract;
-    int nextContract;
-    int personalContract;
-    bool burning;
 };
 
 

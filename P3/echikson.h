@@ -20,7 +20,10 @@ using namespace std;
 class Echikson: public Player {
 public:
     Echikson(ShedGame& g, const string& nm): Player(g, nm), game(g), name(nm) {}
-    virtual ~Echikson() {}
+    virtual ~Echikson() {
+        delete table;
+        delete cardToPlay;
+    }
     
     // Pure virtual functions.
     virtual void reset();              // Issued just before dealing.

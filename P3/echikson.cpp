@@ -41,7 +41,7 @@ void Echikson::prepare(){
 
 ShedGame::Option Echikson::ask(){
     
-    if (hand.size() == 0){
+    if (hand.size() == 0 && !refilling){
         if (stage == 1)
             return ShedGame::Win;
         else{
@@ -149,6 +149,7 @@ int Echikson::getCard(string cardName){
         else
             return -1;
     }
+    return -1;
 }
 
 //Function that goes through hand and sets the state of highest suit count.
