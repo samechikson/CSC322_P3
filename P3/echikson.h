@@ -50,9 +50,12 @@ private:
     int suitCount[4];
     int highest = 0;
     int highestIndex = 0;
+    
+    bool initialDraw;
     int stage;
     bool refilling;
     bool isDone;
+    Card* cardToPlay;
     
     //cardCounts
     int skipCardCount;

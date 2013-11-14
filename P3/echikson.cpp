@@ -32,7 +32,8 @@ void Echikson::reset(){
 }
 
 void Echikson::prepare(){
-    
+    //intial draw is like refilling hand with cards up to stage.
+    refilling = true;
 }
 
 ShedGame::Option Echikson::ask(){
@@ -48,14 +49,20 @@ ShedGame::Option Echikson::ask(){
         }
     }
     else if (hand.size() > 0 && refilling){
-        if (hand.size() == stage-1){
+        if (hand.size() == stage){
             refilling = false;
             return ShedGame::PlayCard;//end of refill. Play on.
         }
-        else return ShedGame::GetCard;//refilling hand.
+        else
+            return ShedGame::GetCard;//refilling hand.
     }
-    else if (hand.size() > 0)
+    else if (hand.size() > 0 && game.getContract() == 0)
         return ShedGame::PlayCard;
+    else if (game.getContract() > 0){
+        if (cancelCardCount > 0)
+            return ShedGame::PlayCard;
+        return ShedGame::GetCard;
+    }
     else if (isDone)
         return ShedGame::Done;
     
@@ -85,6 +92,7 @@ Card::Suit Echikson::setSuit(){
 }
 
 Card Echikson::playCard(){
+    
     
     //go through hand, and see if one fits the current suit or rank.
     for (int i=0; i<hand.size(); i++){
@@ -122,6 +130,7 @@ int Echikson::calculateHighest(){
     }
     return highestIndex;
 }
+
 
 void Echikson::printStats() const{
     cout << "highest: " << highest << endl;
