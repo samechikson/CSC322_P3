@@ -18,6 +18,9 @@ void Echikson::reset(){
     for (int i=0; i < 4; i++)
         suitCount[i] = 0;
     
+    highest = 0;
+    highestIndex = 0;
+    
     skipCardCount = 0;
     reverseCardCount = 0;
     draw2CardCount = 0;
@@ -92,8 +95,19 @@ Card::Suit Echikson::setSuit(){
 }
 
 Card Echikson::playCard(){
+    Card topCard(game.getCurRank(), game.getCurSuit());
     
-    
+    if (game.isDrawFive(topCard)){
+        int haveDraw5 = getCard("draw5");
+        if (haveDraw5 >= 0)
+            return hand[haveDraw5];
+        
+    }
+    else if (game.isDrawTwo(topCard)){
+        int haveDraw2 = getCard("draw2");
+        if (haveDraw2 >= 0)
+            return hand[haveDraw2];
+    }
     //go through hand, and see if one fits the current suit or rank.
     for (int i=0; i<hand.size(); i++){
         if (hand[i].getRank() == game.getCurRank()) {
@@ -119,6 +133,23 @@ void Echikson::disqualified(int p){
 /*
  * Private Functions
  */
+
+int Echikson::getCard(string cardName){
+    for (int i=0; i<hand.size(); i++){
+        if (cardName == "cancel" && game.isCancel(hand[i]))
+            return i;
+        else if (cardName == "draw5" && game.isDrawFive(hand[i]))
+            return i;
+        else if (cardName == "draw2" && game.isDrawTwo(hand[i]))
+            return i;
+        else if (cardName == "wild" && game.isWild(hand[i]))
+            return i;
+        else if (cardName == "skipper" && game.isSkipper(hand[i]))
+            return i;
+        else
+            return -1;
+    }
+}
 
 //Function that goes through hand and sets the state of highest suit count.
 int Echikson::calculateHighest(){

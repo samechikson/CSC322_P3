@@ -48,8 +48,8 @@ protected:
     
 private:
     int suitCount[4];
-    int highest = 0;
-    int highestIndex = 0;
+    int highest;
+    int highestIndex;
     
     bool initialDraw;
     int stage;
@@ -69,6 +69,7 @@ private:
     int otherPlayer[3];
     int* table;
     
+    int getCard(string);
     int calculateHighest();
     void printStats() const;
 };

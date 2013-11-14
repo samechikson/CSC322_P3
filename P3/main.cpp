@@ -37,7 +37,13 @@ int main(int argc, const char * argv[])
     
     
     Crazy8s game("game2");
+    Echikson p1(game, "p1");
+    Echikson p2(game, "p2");
     
+    game.addPlayer(&p1);
+    game.addPlayer(&p2);
+    
+    game.play();
     
     return 0;
 }
