@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "card.h"
 #include "shedgame.h"
 #include "echikson.h"
@@ -59,8 +60,8 @@ ShedGame::Option Echikson::ask(){
         else
             return ShedGame::GetCard;//refilling hand.
     }
-    else if (hand.size() > 0 && game.getContract() == 0)
-        return ShedGame::PlayCard;
+//    else if (hand.size() > 0 && game.getContract() == 0)
+//        return ShedGame::PlayCard;
     else if (game.getContract() > 0){
         if (cancelCardCount > 0)
             return ShedGame::PlayCard;
@@ -68,6 +69,16 @@ ShedGame::Option Echikson::ask(){
     }
     else if (isDone)
         return ShedGame::Done;
+    else{
+        //go through hand, and see if one fits the current suit or rank. If yes, indicate Play card
+        for (int i=0; i<hand.size(); i++){
+            if (hand[i].getRank() == game.getCurRank() || hand[i].getSuit() == game.getCurSuit())
+                return ShedGame::PlayCard;
+            else if (game.isWild(hand[i]))
+                return ShedGame::PlayCard;
+        }
+        return ShedGame::GetCard;
+    }
     
     return ShedGame::PlayCard;
 }
@@ -96,29 +107,32 @@ Card::Suit Echikson::setSuit(){
 
 Card Echikson::playCard(){
     Card topCard(game.getCurRank(), game.getCurSuit());
+    int returnIndex = -1;
     
     if (game.isDrawFive(topCard)){
         int haveDraw5 = getCard("draw5");
         if (haveDraw5 >= 0)
-            return hand[haveDraw5];
+            returnIndex = haveDraw5;
         
     }
     else if (game.isDrawTwo(topCard)){
         int haveDraw2 = getCard("draw2");
         if (haveDraw2 >= 0)
-            return hand[haveDraw2];
+            returnIndex = haveDraw2;
     }
     //go through hand, and see if one fits the current suit or rank.
     for (int i=0; i<hand.size(); i++){
-        if (hand[i].getRank() == game.getCurRank()) {
-            return hand[i];
-        }
-        else if (hand[i].getSuit() == game.getCurSuit()) {
-            return hand[i];
-        }
+        if (hand[i].getRank() == game.getCurRank())
+            returnIndex = i;
+        else if (hand[i].getSuit() == game.getCurSuit()) 
+            returnIndex = i;
+        else if (game.isWild(hand[i]))
+            returnIndex = i;
     }
     
-    return hand.back();
+    isDone = true;
+    hand.erase(hand.begin() + returnIndex);//delete element at returnIndex
+    return hand[returnIndex];
 }
 
 void Echikson::inform(int p, int s, int t){

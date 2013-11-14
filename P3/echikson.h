@@ -19,7 +19,7 @@ using namespace std;
 
 class Echikson: public Player {
 public:
-    Echikson(ShedGame& g, const string& nm): Player(g, nm), game(g), name(nm) {}
+    Echikson(ShedGame& g, const string& nm): Player(g, nm){}
     virtual ~Echikson() {
         delete table;
         delete cardToPlay;
@@ -37,17 +37,6 @@ public:
     
     // Virtual function with a default implementation.
     virtual void restocked() {}
-    
-    // Non-overridable functions
-    string getName() const;
-    void printHand() const;
-    int getId() const { return id; }
-    
-protected:
-    int id;  // Player number
-    ShedGame& game;
-    const string name;
-    vector<Card> hand;
     
 private:
     int suitCount[4];

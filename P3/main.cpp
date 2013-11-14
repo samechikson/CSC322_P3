@@ -37,8 +37,8 @@ int main(int argc, const char * argv[])
     
     
     Crazy8s* game = new Crazy8s("game2");
-    Echikson* p1 = new Echikson(*game, "p1");
-    Echikson* p2 = new Echikson(*game, "p2");
+    Player* p1 = new Echikson(*game, "p1");
+    Player* p2 = new Echikson(*game, "p2");
     
     game->addPlayer(p1);
     game->addPlayer(p2);
