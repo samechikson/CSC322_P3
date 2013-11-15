@@ -143,7 +143,8 @@ int ShedGame::play() {
                     player[cur]->take(stock.back());
                     net[curId]++;
                     stock.pop_back();
-                    if (stock.empty()) restock();
+                    if (stock.empty())
+                        restock();
                     if (contract > 0) {
                         // Opting to draw cards to fulfill a contract.
                         // Do not allow playing a card.
@@ -308,6 +309,10 @@ void ShedGame::nextPlayer() {
     if (cur > player.size()-1) cur = 0;
     else if (cur < 0) cur = (int)player.size() - 1;
     
+    //skipper card has been played, reset incr to initial.
+    if (incr > 1) incr = 1;
+    else if (incr < -1) incr = -1;
+    
     curId = player[cur]->getId();
 }
 
@@ -335,8 +340,8 @@ void ShedGame::disqualify(int idx, const string& msg) {
  */
 void ShedGame::restock() {
     //retrieve the top card and remove it from the array.
-    Card topCard = stock.back();
-    stock.pop_back();
+    Card topCard = discard.top();
+    discard.pop();
     
     //loop through discard stack, and put every card into stock.
     //empty discard stack.
@@ -348,5 +353,5 @@ void ShedGame::restock() {
     random_shuffle(stock.begin(), stock.end());
     
     //replace top card that was taken at start of the function.
-    stock.push_back(topCard);
+    discard.push(topCard);
 }

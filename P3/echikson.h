@@ -48,6 +48,7 @@ private:
     bool refilling;
     bool firstRefilling;
     bool isDone;
+    bool burnPhase;
     Card* cardToPlay;
     
     //cardCounts

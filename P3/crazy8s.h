@@ -46,7 +46,7 @@ public:
         return c.getRank() == Card::king && c.getSuit() == Card::diamonds;
     };
     int handSize() const{
-        return 8;
+        return 5;
     };
     
     // Enumeration type for player's option at game time.

@@ -34,6 +34,7 @@ void Echikson::reset(){
     firstRefilling = false;
     refilling = false;
     isDone = false;
+    burnPhase = false;
 }
 
 void Echikson::prepare(){
@@ -43,9 +44,10 @@ void Echikson::prepare(){
 }
 
 ShedGame::Option Echikson::ask(){
+    Card topCard(game.getCurRank(), game.getCurSuit());
     
     if (hand.size() == 0 && !refilling){
-        if (stage == 1)
+        if (stage == 0)
             return ShedGame::Win;
         else{
             stage--;
@@ -59,6 +61,19 @@ ShedGame::Option Echikson::ask(){
     else if (firstRefilling){
         if (hand.size() == game.handSize()){
             firstRefilling = false;
+            //if cur card is either a draw 2 or draw 5 card. Invoke PlayCard if I have those cards to counter.
+            if (game.isDrawTwo(topCard)){
+//                if (draw2CardCount > 0)
+//                    return ShedGame::PlayCard;
+//                else
+                    return ShedGame::GetCard;
+            }
+            if (game.isDrawFive(topCard)){
+//                if (draw5CardCount > 0)
+//                    return ShedGame::PlayCard;
+//                else
+                    return ShedGame::GetCard;
+            }
             return ShedGame::PlayCard;
         }
         else
@@ -74,16 +89,28 @@ ShedGame::Option Echikson::ask(){
         else
             return ShedGame::GetCard;//refilling hand. Still under contract.
     }
-    else if (game.getContract() == 5 || (game.getContract() == 2 /*Add a flag */)){
-        refilling = true;
+//    else if (game.getContract() == 5 || (game.getContract() == 2 && !refilling)){
+//        refilling = true;
 //        if (cancelCardCount > 0)
-//            return ShedGame::PlayCard;
+//           return ShedGame::PlayCard;
+//        return ShedGame::GetCard;
+//    }
+    else if (game.getContract() > 0){
+        refilling = true;
         return ShedGame::GetCard;
     }
     else if (isDone){
         isDone = !isDone;
         return ShedGame::Done;
     }
+//    else if (burnPhase){
+//        for (int i=0; i < hand.size(); i++){
+//            if (hand[i].getSuit() == topCard.getSuit())
+//                return ShedGame::PlayCard;
+//        }
+//        burnPhase = false;
+//        return ShedGame::Done;
+//    }
     else{
         //go through hand, and see if one fits the current suit or rank. If yes, indicate PlayCard
         for (int i=0; i<hand.size(); i++){
@@ -107,7 +134,7 @@ ShedGame::Option Echikson::ask(){
 void Echikson::take(const Card& c){
     hand.push_back(c);
     
-    suitCount[c.getSuit()]++;
+    if (c.getSuit() < 4) suitCount[c.getSuit()]++;//there was a bug where c's suit was a large integer
     
     if(game.isSkipper(c)) skipCardCount++;
     else if(game.isReverser(c)) reverseCardCount++;
@@ -117,9 +144,9 @@ void Echikson::take(const Card& c){
     else if(game.isWild(c)) wildCardCount++;
     else if(game.isBurner(c)) burnCardCount++;
     
-    cout << name << "        hand: " ;
-    printHand();
-    cout << "  size: " << hand.size() << endl;
+//    cout << name << "        hand: " ;
+//    printHand();
+//    cout << "  size: " << hand.size() << endl;
 }
 
 Card::Suit Echikson::setSuit(){
@@ -171,6 +198,17 @@ Card Echikson::playCard(){
 //    cout << "before delete: ";
 //    printHand();
 //    cout << endl;
+    if(game.isSkipper(hand[returnIndex])) skipCardCount--;
+    else if(game.isReverser(hand[returnIndex])) reverseCardCount--;
+    else if(game.isDrawTwo(hand[returnIndex])) draw2CardCount--;
+    else if(game.isDrawFive(hand[returnIndex])) draw5CardCount--;
+    else if(game.isCancel(hand[returnIndex])) cancelCardCount--;
+    else if(game.isWild(hand[returnIndex])) wildCardCount--;
+    else if(game.isBurner(hand[returnIndex])){
+        burnCardCount--;
+        burnPhase = true;
+    }
+    
     isDone = true;
     Card cardToReturn(hand[returnIndex].getRank(), hand[returnIndex].getSuit());//copy card so that it is not deleted before it is returned.0
     hand.erase(hand.begin() + returnIndex);//delete element at returnIndex
