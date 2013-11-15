@@ -74,9 +74,13 @@ ShedGame::Option Echikson::ask(){
         for (int i=0; i<hand.size(); i++){
             if (hand[i].getRank() == game.getCurRank() || hand[i].getSuit() == game.getCurSuit())
                 return ShedGame::PlayCard;
-            else if (game.isWild(hand[i]))
+        }
+        //If no rank or suit, try to find a wild card.
+        for (int i=0; i<hand.size(); i++){
+            if (game.isWild(hand[i]))
                 return ShedGame::PlayCard;
         }
+        
         return ShedGame::GetCard;
     }
     
@@ -108,6 +112,7 @@ Card::Suit Echikson::setSuit(){
 Card Echikson::playCard(){
     Card topCard(game.getCurRank(), game.getCurSuit());
     int returnIndex = -1;
+    bool foundCard = false;
     
     if (game.isDrawFive(topCard)){
         int haveDraw5 = getCard("draw5");
@@ -121,18 +126,33 @@ Card Echikson::playCard(){
             returnIndex = haveDraw2;
     }
     //go through hand, and see if one fits the current suit or rank.
-    for (int i=0; i<hand.size(); i++){
-        if (hand[i].getRank() == game.getCurRank())
+    int i = 0;
+    while (!foundCard && i<hand.size()) {
+        if (hand[i].getRank() == game.getCurRank()){
             returnIndex = i;
-        else if (hand[i].getSuit() == game.getCurSuit()) 
+            foundCard = true;
+        }
+        else if (hand[i].getSuit() == game.getCurSuit()){
             returnIndex = i;
-        else if (game.isWild(hand[i]))
-            returnIndex = i;
+            foundCard = true;
+        }
+        i++;
     }
+//
+//    else if (game.isWild(hand[i]))
+//        returnIndex = i;
     
+//    cout << "before delete: ";
+//    printHand();
+//    cout << endl;
     isDone = true;
+    Card cardToReturn(hand[returnIndex].getRank(), hand[returnIndex].getSuit());//copy card so that it is not deleted before it is returned.
     hand.erase(hand.begin() + returnIndex);//delete element at returnIndex
-    return hand[returnIndex];
+    
+//    cout << "after delete: ";
+//    printHand();
+//    cout << endl;
+    return cardToReturn;
 }
 
 void Echikson::inform(int p, int s, int t){
