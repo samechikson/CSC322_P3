@@ -46,6 +46,7 @@ private:
     bool initialDraw;
     int stage;
     bool refilling;
+    bool firstRefilling;
     bool isDone;
     Card* cardToPlay;
     

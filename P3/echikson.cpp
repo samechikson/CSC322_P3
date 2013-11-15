@@ -31,13 +31,15 @@ void Echikson::reset(){
     burnCardCount = 0;
     
     stage = game.handSize();
+    firstRefilling = false;
     refilling = false;
     isDone = false;
 }
 
 void Echikson::prepare(){
     //intial draw is like refilling hand with cards up to stage.
-    refilling = true;
+//    refilling = true;
+    firstRefilling = true;
 }
 
 ShedGame::Option Echikson::ask(){
@@ -49,28 +51,41 @@ ShedGame::Option Echikson::ask(){
             stage--;
             cout << "[" << name << ": Stage " << stage << "]" << endl;
             refilling = true;
+            isDone = false;
             return ShedGame::GetCard; //begin drawing cards to get stage number of new cards.
         }
     }
-    else if (hand.size() > 0 && refilling){
-        if (hand.size() == stage){
-            refilling = false;
-            return ShedGame::PlayCard;//end of refill. Play on.
+    //First hand of game. Fill hand and Play card
+    else if (firstRefilling){
+        if (hand.size() == game.handSize()){
+            firstRefilling = false;
+            return ShedGame::PlayCard;
         }
         else
-            return ShedGame::GetCard;//refilling hand.
+            return ShedGame::GetCard;
     }
-//    else if (hand.size() > 0 && game.getContract() == 0)
-//        return ShedGame::PlayCard;
-    else if (game.getContract() > 0){
-        if (cancelCardCount > 0)
-            return ShedGame::PlayCard;
+    else if (refilling){
+//        else if (game.getContract() > 0)
+//            return ShedGame::GetCard;
+        if (game.getContract() == 0){
+            refilling = false;
+            return ShedGame::Done;//After refilling, can't play card.
+        }
+        else
+            return ShedGame::GetCard;//refilling hand. Still under contract.
+    }
+    else if (game.getContract() == 5 || (game.getContract() == 2 /*Add a flag */)){
+        refilling = true;
+//        if (cancelCardCount > 0)
+//            return ShedGame::PlayCard;
         return ShedGame::GetCard;
     }
-    else if (isDone)
+    else if (isDone){
+        isDone = !isDone;
         return ShedGame::Done;
+    }
     else{
-        //go through hand, and see if one fits the current suit or rank. If yes, indicate Play card
+        //go through hand, and see if one fits the current suit or rank. If yes, indicate PlayCard
         for (int i=0; i<hand.size(); i++){
             if (hand[i].getRank() == game.getCurRank() || hand[i].getSuit() == game.getCurSuit())
                 return ShedGame::PlayCard;
@@ -81,6 +96,7 @@ ShedGame::Option Echikson::ask(){
                 return ShedGame::PlayCard;
         }
         
+        //if none work, get a card.
         return ShedGame::GetCard;
     }
     
@@ -101,6 +117,9 @@ void Echikson::take(const Card& c){
     else if(game.isWild(c)) wildCardCount++;
     else if(game.isBurner(c)) burnCardCount++;
     
+    cout << name << "        hand: " ;
+    printHand();
+    cout << "  size: " << hand.size() << endl;
 }
 
 Card::Suit Echikson::setSuit(){
@@ -113,6 +132,7 @@ Card Echikson::playCard(){
     Card topCard(game.getCurRank(), game.getCurSuit());
     int returnIndex = -1;
     bool foundCard = false;
+    int i;
     
     if (game.isDrawFive(topCard)){
         int haveDraw5 = getCard("draw5");
@@ -126,7 +146,7 @@ Card Echikson::playCard(){
             returnIndex = haveDraw2;
     }
     //go through hand, and see if one fits the current suit or rank.
-    int i = 0;
+    i = 0;
     while (!foundCard && i<hand.size()) {
         if (hand[i].getRank() == game.getCurRank()){
             returnIndex = i;
@@ -138,15 +158,21 @@ Card Echikson::playCard(){
         }
         i++;
     }
-//
-//    else if (game.isWild(hand[i]))
-//        returnIndex = i;
+    
+    i = 0;
+    while (!foundCard && i<hand.size()) {
+        if (game.isWild(hand[i])){
+            foundCard = true;
+            returnIndex = i;
+        }
+        i++;
+    }
     
 //    cout << "before delete: ";
 //    printHand();
 //    cout << endl;
     isDone = true;
-    Card cardToReturn(hand[returnIndex].getRank(), hand[returnIndex].getSuit());//copy card so that it is not deleted before it is returned.
+    Card cardToReturn(hand[returnIndex].getRank(), hand[returnIndex].getSuit());//copy card so that it is not deleted before it is returned.0
     hand.erase(hand.begin() + returnIndex);//delete element at returnIndex
     
 //    cout << "after delete: ";
