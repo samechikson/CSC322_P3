@@ -22,7 +22,7 @@ public:
     Echikson(ShedGame& g, const string& nm): Player(g, nm){}
     virtual ~Echikson() {
         delete table;
-        delete cardToPlay;
+        //delete cardToPlay;
     }
     
     // Pure virtual functions.
@@ -49,7 +49,8 @@ private:
     bool firstRefilling;
     bool isDone;
     bool burnPhase;
-    Card* cardToPlay;
+    int indexToPlay;
+    bool cardToPlayIsset;
     
     //cardCounts
     int skipCardCount;
@@ -65,6 +66,7 @@ private:
     
     int getCard(string);
     int calculateHighest();
+    bool canPlay();
     void printStats() const;
 };
 

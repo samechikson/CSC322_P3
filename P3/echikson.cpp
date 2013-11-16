@@ -35,46 +35,51 @@ void Echikson::reset(){
     refilling = false;
     isDone = false;
     burnPhase = false;
+    cardToPlayIsset = false;
 }
 
 void Echikson::prepare(){
     //intial draw is like refilling hand with cards up to stage.
 //    refilling = true;
     firstRefilling = true;
+    cardToPlayIsset = false;
+    indexToPlay = -1;
 }
 
 ShedGame::Option Echikson::ask(){
     Card topCard(game.getCurRank(), game.getCurSuit());
     
+    //When run out of cards, either win game, or reduce stage.
     if (hand.size() == 0 && !refilling){
-        if (stage == 0)
+        if (stage == 1)
             return ShedGame::Win;
         else{
             stage--;
             cout << "[" << name << ": Stage " << stage << "]" << endl;
             refilling = true;
             isDone = false;
+            firstRefilling = true;
             return ShedGame::GetCard; //begin drawing cards to get stage number of new cards.
         }
     }
-    //First hand of game. Fill hand and Play card
+    //First hand of game or after restock. Fill hand and Play card
     else if (firstRefilling){
-        if (hand.size() == game.handSize()){
+        if (hand.size() == stage){
             firstRefilling = false;
-            //if cur card is either a draw 2 or draw 5 card. Invoke PlayCard if I have those cards to counter.
-            if (game.isDrawTwo(topCard)){
-//                if (draw2CardCount > 0)
-//                    return ShedGame::PlayCard;
-//                else
+            
+            //This will execute after restock, not after drawing the first hand (Where you would want to PlayCard).
+            if (refilling){
+                refilling = !refilling;
+                return ShedGame::Done;
+            }
+            else{
+                if (canPlay()){
+                    isDone = true;
+                    return ShedGame::PlayCard;
+                }
+                else
                     return ShedGame::GetCard;
             }
-            if (game.isDrawFive(topCard)){
-//                if (draw5CardCount > 0)
-//                    return ShedGame::PlayCard;
-//                else
-                    return ShedGame::GetCard;
-            }
-            return ShedGame::PlayCard;
         }
         else
             return ShedGame::GetCard;
@@ -89,17 +94,23 @@ ShedGame::Option Echikson::ask(){
         else
             return ShedGame::GetCard;//refilling hand. Still under contract.
     }
-//    else if (game.getContract() == 5 || (game.getContract() == 2 && !refilling)){
-//        refilling = true;
-//        if (cancelCardCount > 0)
-//           return ShedGame::PlayCard;
-//        return ShedGame::GetCard;
-//    }
+    else if (game.getContract() == 5 /*|| (game.getContract() == 2 && !refilling)*/){
+        if (cancelCardCount > 0){
+            indexToPlay = getCard("cancel");
+            cardToPlayIsset = true;
+            isDone = true;
+            return ShedGame::PlayCard;
+        }
+        refilling = true;
+        return ShedGame::GetCard;
+    }
+    //Still under contract. Get a card.
     else if (game.getContract() > 0){
         refilling = true;
         return ShedGame::GetCard;
     }
     else if (isDone){
+        refilling = false;
         isDone = !isDone;
         return ShedGame::Done;
     }
@@ -112,29 +123,20 @@ ShedGame::Option Echikson::ask(){
 //        return ShedGame::Done;
 //    }
     else{
-        //go through hand, and see if one fits the current suit or rank. If yes, indicate PlayCard
-        for (int i=0; i<hand.size(); i++){
-            if (hand[i].getRank() == game.getCurRank() || hand[i].getSuit() == game.getCurSuit())
-                return ShedGame::PlayCard;
+        if (canPlay()){
+            isDone = true;
+            return ShedGame::PlayCard;
         }
-        //If no rank or suit, try to find a wild card.
-        for (int i=0; i<hand.size(); i++){
-            if (game.isWild(hand[i]))
-                return ShedGame::PlayCard;
-        }
-        
         //if none work, get a card.
         return ShedGame::GetCard;
     }
-    
-    return ShedGame::PlayCard;
 }
 
 
 void Echikson::take(const Card& c){
     hand.push_back(c);
     
-    if (c.getSuit() < 4) suitCount[c.getSuit()]++;//there was a bug where c's suit was a large integer
+    suitCount[c.getSuit()]++;//there was a bug where c's suit was a large integer
     
     if(game.isSkipper(c)) skipCardCount++;
     else if(game.isReverser(c)) reverseCardCount++;
@@ -161,38 +163,44 @@ Card Echikson::playCard(){
     bool foundCard = false;
     int i;
     
-    if (game.isDrawFive(topCard)){
-        int haveDraw5 = getCard("draw5");
-        if (haveDraw5 >= 0)
-            returnIndex = haveDraw5;
+    //This is set in ask()
+    //signifies that there is a card that works, and was set to cardToPlay.
+    if (cardToPlayIsset)
+        returnIndex = indexToPlay;
+    else{
+        if (game.isDrawFive(topCard)){
+            int haveDraw5 = getCard("draw5");
+            if (haveDraw5 >= 0)
+                returnIndex = haveDraw5;
+            
+        }
+        else if (game.isDrawTwo(topCard)){
+            int haveDraw2 = getCard("draw2");
+            if (haveDraw2 >= 0)
+                returnIndex = haveDraw2;
+        }
+        //go through hand, and see if one fits the current suit or rank.
+        i = 0;
+        while (!foundCard && i<hand.size()) {
+            if (hand[i].getRank() == game.getCurRank()){
+                returnIndex = i;
+                foundCard = true;
+            }
+            else if (hand[i].getSuit() == game.getCurSuit()){
+                returnIndex = i;
+                foundCard = true;
+            }
+            i++;
+        }
         
-    }
-    else if (game.isDrawTwo(topCard)){
-        int haveDraw2 = getCard("draw2");
-        if (haveDraw2 >= 0)
-            returnIndex = haveDraw2;
-    }
-    //go through hand, and see if one fits the current suit or rank.
-    i = 0;
-    while (!foundCard && i<hand.size()) {
-        if (hand[i].getRank() == game.getCurRank()){
-            returnIndex = i;
-            foundCard = true;
+        i = 0;
+        while (!foundCard && i<hand.size()) {
+            if (game.isWild(hand[i])){
+                foundCard = true;
+                returnIndex = i;
+            }
+            i++;
         }
-        else if (hand[i].getSuit() == game.getCurSuit()){
-            returnIndex = i;
-            foundCard = true;
-        }
-        i++;
-    }
-    
-    i = 0;
-    while (!foundCard && i<hand.size()) {
-        if (game.isWild(hand[i])){
-            foundCard = true;
-            returnIndex = i;
-        }
-        i++;
     }
     
 //    cout << "before delete: ";
@@ -244,8 +252,6 @@ int Echikson::getCard(string cardName){
             return i;
         else if (cardName == "skipper" && game.isSkipper(hand[i]))
             return i;
-        else
-            return -1;
     }
     return -1;
 }
@@ -259,6 +265,35 @@ int Echikson::calculateHighest(){
         }
     }
     return highestIndex;
+}
+
+bool Echikson::canPlay(){
+    cardToPlayIsset = false;
+    Card topCard(game.getCurRank(), game.getCurSuit());
+    
+    //go through hand, and see if one fits the current suit or rank.
+    for (int i = 0; i < hand.size(); i++){
+        if (hand[i].getRank() == game.getCurRank()){
+            indexToPlay = i;
+            cardToPlayIsset = true;
+            return true;
+        }
+        else if (hand[i].getSuit() == game.getCurSuit()){
+            indexToPlay = i;
+            cardToPlayIsset = true;
+            return true;
+        }
+    }
+    
+    for (int i = 0; i < hand.size(); i++){
+        if (game.isWild(hand[i])){
+            indexToPlay = i;
+            cardToPlayIsset = true;
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 
